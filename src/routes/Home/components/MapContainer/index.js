@@ -2,27 +2,34 @@ import React from "react";
 import { View } from "native-base";
 import MapView from "react-native-maps";
 
-import SearchBox from "../SearchBox"
+import SearchBox from "../SearchBox";
+import SearchResults from "../SearchResults";
 
-import SearchResults from "../SearchResults"
+import styles from "./MapContainerStyles.js";
 
-import styles from "./MapContainerStyles";
+export const MapContainer = ({region, getInputData, toggleSearchResultModal, getAddressPredictions, resultTypes, predictions})=>{
 
-export const MapContainer = ({region, getInputData})=>{
-    return (
+    return(
         <View style={styles.container}>
             <MapView
                 provider={MapView.PROVIDER_GOOGLE}
                 style={styles.map}
                 region={region}
             >
-            <MapView.Marker
-                coordinate={region}
-                pinColor="green"
-            />
+                <MapView.Marker
+                    coordinate={region}
+                    pinColor="green"
+
+                />
             </MapView>
-            <SearchBox getInputData={getInputData}/>
-            <SearchResults/>
+            <SearchBox
+                getInputData={getInputData}
+                toggleSearchResultModal={toggleSearchResultModal}
+                getAddressPredictions={getAddressPredictions}
+            />
+            { (resultTypes.pickUp || resultTypes.dropOff) &&
+            <SearchResults predictions={predictions}/>
+            }
         </View>
     )
 }

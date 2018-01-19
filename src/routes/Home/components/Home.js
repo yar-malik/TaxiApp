@@ -13,15 +13,21 @@ class Home extends React.Component{
 
     render(){
         const region = {
-            latitude:3.146642,
-            longitude:101.695845,
+            latitude:53.551086,
+            longitude:9.993682,
             latitudeDelta:0.0922,
             longitudeDelta:0.0421
         }
         return(
             <Container>
                 {this.props.region.latitude &&
-                <MapContainer region={this.props.region} getInputData={this.props.getInputData}/>
+                <MapContainer region={this.props.region}
+                              getInputData={this.props.getInputData}
+                              toggleSearchResultModal={this.props.toggleSearchResultModal}
+                              getAddressPredictions={this.props.getAddressPredictions}
+                              resultTypes={this.props.resultTypes}
+                              predictions={this.props.predictions}
+                />
                 }
             </Container>
 

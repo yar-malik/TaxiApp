@@ -1,11 +1,17 @@
 import update from "react-addons-update";
 import constants from "./actionConstants";
 import { Dimensions } from "react-native"
+import RNGooglePlaces from "react-native-google-places";
 
 //--------------------
 //Constants
 //--------------------
-const { GET_CURRENT_LOCATION, GET_INPUT } = constants;
+const {
+    GET_CURRENT_LOCATION,
+    GET_INPUT,
+    TOGGLE_SEARCH_RESULT,
+    GET_ADDRESS_PREDICTIONS
+} = constants;
 
 const { width, height } = Dimensions.get("window");
 
@@ -35,15 +41,41 @@ export function getCurrentLocation(){
 }
 
 //GET USER INPUT
+
 export function getInputData(payload){
-    return {
+    return{
         type:GET_INPUT,
+        payload
+    }
+}
+//toggle search result modal
+export function toggleSearchResultModal(payload){
+    return{
+        type:TOGGLE_SEARCH_RESULT,
         payload
     }
 }
 
 
+//GET ADRESSES FROM GOOGLE PLACE
 
+export function getAddressPredictions(){
+    return(dispatch, store)=>{
+        let userInput = store().home.resultTypes.pickUp ? store().home.inputData.pickUp : store().home.inputData.dropOff;
+        RNGooglePlaces.getAutocompletePredictions(userInput,
+            {
+                country:"DE"
+            }
+        )
+            .then((results)=>
+                dispatch({
+                    type:GET_ADDRESS_PREDICTIONS,
+                    payload:results
+                })
+            )
+            .catch((error)=> console.log(error.message));
+    };
+}
 //--------------------
 //Action Handlers
 //--------------------
@@ -66,28 +98,73 @@ function handleGetCurrentLocation(state, action){
     })
 }
 
-
-
-function handleGetInputData(state, action){
-    const {key, value} = action.payload;
+function handleGetInputDate(state, action){
+    const { key, value } = action.payload;
     return update(state, {
         inputData:{
             [key]:{
                 $set:value
             }
         }
+    });
+}
+
+function handleToggleSearchResult(state, action){
+    if(action.payload === "pickUp"){
+        return update(state, {
+            resultTypes:{
+                pickUp:{
+                    $set:true,
+                },
+                dropOff:{
+                    $set:false
+                }
+            },
+            predictions:{
+                $set:{}
+            }
+
+        });
+    }
+    if(action.payload === "dropOff"){
+        return update(state, {
+            resultTypes:{
+                pickUp:{
+                    $set:false,
+                },
+                dropOff:{
+                    $set:true
+                }
+            },
+            predictions:{
+                $set:{}
+            }
+
+        });
+    }
+
+}
+
+
+function handleGetAddressPredictions(state, action){
+    return update(state, {
+        predictions:{
+            $set:action.payload
+        }
     })
 }
 
-
 const ACTION_HANDLERS = {
     GET_CURRENT_LOCATION:handleGetCurrentLocation,
-    GET_INPUT:handleGetInputData
-}
+    GET_INPUT:handleGetInputDate,
+    TOGGLE_SEARCH_RESULT:handleToggleSearchResult,
+    GET_ADDRESS_PREDICTIONS:handleGetAddressPredictions
 
+}
 const initialState = {
     region:{},
-    inputData:{}
+    inputData:{},
+    resultTypes:{}
 
 };
 
