@@ -1,0 +1,4 @@
+export default {
+    GET_CURRENT_LOCATION:"GET_CURRENT_LOCATION",
+    GET_INPUT:"GET_INPUT"
+};
