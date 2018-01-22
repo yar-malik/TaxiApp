@@ -16,11 +16,10 @@ export const MapContainer = ({region, getInputData, toggleSearchResultModal, get
                 style={styles.map}
                 region={region}
             >
-                <MapView.Marker
-                    coordinate={region}
-                    pinColor="green"
-
-                />
+            <MapView.Marker
+                coordinate={region}
+                pinColor="red"
+            />
             </MapView>
             <SearchBox
                 getInputData={getInputData}

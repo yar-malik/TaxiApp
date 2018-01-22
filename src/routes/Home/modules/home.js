@@ -20,8 +20,6 @@ const ASPECT_RATIO = width / height;
 const LATITUDE_DELTA = 0.0922;
 const LONGITUDE_DELTA = ASPECT_RATIO * LATITUDE_DELTA
 
-
-
 //--------------------
 //Actions
 //--------------------
